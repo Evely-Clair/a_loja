@@ -1,0 +1,9 @@
+{
+	"appId": "a.loja",
+	"appName": "a_loja",
+	"bundledWebRuntime": false,
+	"npmClient": "npm",
+	"webDir": "www",
+	"plugins": {},
+	"cordova": {}
+}

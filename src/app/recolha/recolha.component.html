@@ -1,0 +1,27 @@
+<ion-content>
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-button routerLink="pag-principal">          
+          <img src="../../assets/voltar-img.png" alt="">
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-card>
+    <ion-list>
+      <ion-item *ngFor="let produto of recolha">
+        <ion-thumbnail slot="start">
+          <img src="../../assets/placeholder.jpg" alt="">
+        </ion-thumbnail>
+        <ion-label>
+          <h2>{{ produto.artigo }}</h2>
+          <p>Barcode: {{ produto.idArtigo }}</p>
+          <p>Qt a recolher: {{ produto.qt }}/Qt: {{ produto.qt }}</p>
+          <ion-input type="number" id="qtProdutoVenda"></ion-input>
+          <ion-button>Eliminar</ion-button>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+</ion-content>

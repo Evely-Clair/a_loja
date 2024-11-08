@@ -1,0 +1,136 @@
+ion-header {
+    --margin-bottom: 10px;
+}
+
+ion-button img {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+ion-card {
+    margin-top: 10px;
+    position: relative; 
+}
+
+ion-card-header {
+    padding-bottom: 5px;
+}
+
+ion-card-title {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+ion-card-subtitle {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #666;
+    font-weight: lighter;
+    margin-top: 5px;
+}
+
+ion-card-content {
+    font-size: 1em;
+    line-height: 1.5;
+}
+
+ion-card img {
+    width: 60%; 
+    height: 10%;
+    object-fit: cover; 
+    margin: 10px auto; 
+    border-radius: 15px; 
+    display: block; 
+}
+
+
+table {
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px;
+}
+
+th, td {
+    padding: 10px; 
+    text-align: left; 
+    border: 1px solid #1c1918; 
+}
+
+th {
+    font-weight: bold;
+    background-color: #1c1918;
+}
+
+table p {
+    margin: 0; 
+}
+
+
+.error-message {
+    color: red;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* 30% opacity */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.atualizar {
+    border-radius: 15px; 
+    padding: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.atualizar ion-card {
+    padding: 0px;
+}
+
+.atualizar ion-card-content {
+    padding: 0px;
+}
+
+.atualizar ion-label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.atualizar table tr, .atualizar table td {
+    padding: 0px;
+    align-items: center;
+}
+
+.atualizar table input, .atualizar table select{
+    background-color: transparent;
+    color:white;
+    outline: none;
+    border: none;
+    width: 100%;
+    height: auto;
+    margin: 0px;
+}
+
+.atualizar option {
+    background-color: #1c1918;
+}
+
+.atualizar input {
+    width: 30%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    margin-top: 10px;
+}
