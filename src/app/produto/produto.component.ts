@@ -51,28 +51,26 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  public onChangeForm( selected: [] ) {
-    if (this.showUpdate){
-      if (!selected) {
-        for (var i = 0; i < this.localizacoesProduto.length ;i++){
-          this.getSubLocais(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idLocalizacao']);
-          this.getPosicoes(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idSubLocalizacao']);  
-        }
-      }
+  public onShowForm() {
+    for (var i = 0; i < this.localizacoesProduto.length ;i++){
+      this.getSubLocais(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idLocalizacao']);
+      this.getPosicoes(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idSubLocalizacao']);  
     }
   }
 
 onSelectChange(event: any, index: number, type: string) {
     const selectedValue = event.target.value;
-
     if (type ==  'localizacao') {
       this.localizacoesProduto[index]['idLocalizacao']  = selectedValue;
       this.localizacoesProduto[index]['localizacao'] = event.target.options[event.target.selectedIndex].text;
+      this.getSubLocais(index, selectedValue)
+      this.getPosicoes(index, selectedValue)
     } 
 
     if(type ==  'sublocalizacao') {
       this.localizacoesProduto[index]['idSubLocalizacao'] = selectedValue;
       this.localizacoesProduto[index]['sublocalizacao'] = event.target.options[event.target.selectedIndex].text;
+      this.getPosicoes(index, selectedValue)
     }
         
      if(type ==  'posicao') {
@@ -93,7 +91,13 @@ onSelectChange(event: any, index: number, type: string) {
 
   public getSubLocais(idArtigoLocal: number, idLocal: number) {
     this.server.getSubLocais(idLocal).then((response) => {
-      this.sublocais.push({ idArtigoLocal, sublocais: response });
+      const existingIndex = this.sublocais.findIndex(sublocal => sublocal.idArtigoLocal === idArtigoLocal);
+      if (existingIndex !== -1) {
+        this.sublocais[existingIndex].sublocais = response;
+      } else {
+        this.sublocais.push({ idArtigoLocal, sublocais: response });
+      }
+      alert(JSON.stringify(this.sublocais))
     })
     .catch(error => {
       alert('Error fetching sublocations:' + JSON.stringify(error));
@@ -102,7 +106,13 @@ onSelectChange(event: any, index: number, type: string) {
 
   public getPosicoes(idArtigoLocal: number, idSubLocal: number) {
     this.server.getPosicoes(idSubLocal).then((response) => {
-      this.posicoes.push({ idArtigoLocal: idArtigoLocal, posicoes: response });
+      const existingIndex = this.posicoes.findIndex(posicao => posicao.idArtigoLocal === idArtigoLocal);
+      if (existingIndex !== -1) {
+        this.sublocais[existingIndex].sublocais = response;
+      } else {
+        this.sublocais.push({ idArtigoLocal, sublocais: response });
+      }
+      alert(JSON.stringify(this.posicoes));
     })
     .catch(error => {
       alert('Error fetching positions:' + JSON.stringify(error));
