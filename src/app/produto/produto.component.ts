@@ -12,7 +12,7 @@ export class ProdutoComponent implements OnInit {
   @Input() barcode: string | null = null;
   produtos: Produto | null = null;
   produto: Produto | null = null;
-  localizacoesProduto = [];
+  localizacoesProduto: any = [];
   locais = [];
   sublocais: { idArtigoLocal: number; sublocais: any[] }[] = [];  
   posicoes: { idArtigoLocal: number; posicoes: any[] }[] = [];  
@@ -51,19 +51,36 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  public editarHideShowUpdate(value: boolean, form: string ) {
-    this.showUpdate = value;
+  public onChangeForm( selected: [] ) {
     if (this.showUpdate){
-      if (!form) {
+      if (!selected) {
         for (var i = 0; i < this.localizacoesProduto.length ;i++){
           this.getSubLocais(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idLocalizacao']);
           this.getPosicoes(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idSubLocalizacao']);  
         }
-      } else {
-
       }
     }
   }
+
+onSelectChange(event: any, index: number, type: string) {
+    const selectedValue = event.target.value;
+
+    if (type ==  'localizacao') {
+      this.localizacoesProduto[index]['idLocalizacao']  = selectedValue;
+      this.localizacoesProduto[index]['localizacao'] = event.target.options[event.target.selectedIndex].text;
+    } 
+
+    if(type ==  'sublocalizacao') {
+      this.localizacoesProduto[index]['idSubLocalizacao'] = selectedValue;
+      this.localizacoesProduto[index]['sublocalizacao'] = event.target.options[event.target.selectedIndex].text;
+    }
+        
+     if(type ==  'posicao') {
+      this.localizacoesProduto[index]['idPosicao'] = selectedValue;
+      this.localizacoesProduto[index]['posicao'] = event.target.options[event.target.selectedIndex].text;
+    }
+  }
+
 
   public getLocais() {
     this.server.getLocais().then((response) => {
@@ -93,6 +110,7 @@ export class ProdutoComponent implements OnInit {
   }
 
   public updateArtigo() {
+    let qt = 0;
 
   }
 }
