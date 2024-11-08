@@ -55,14 +55,14 @@
           </tr>
         </tbody>
       </table>
-      <ion-button (click)="showUpdate=true;">Editar</ion-button>
+      <ion-button (click)="showUpdate=true; onShowForm()">Editar</ion-button>
     </ion-card-content>
   </ion-card>
 
   <div class="backdrop" *ngIf="showUpdate">
     <ion-card class="atualizar">
       <ion-card-content>
-        <form (ngSubmit)="updateProduto()" (change)="onChangeForm()">
+        <form (ngSubmit)="updateProduto()">
           <ion-label>Quantidade: </ion-label>
           <input type="number" [(ngModel)]="QT" name="quantity" required>
           <br>
