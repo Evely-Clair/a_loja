@@ -42,27 +42,59 @@ function getArtigoByEAN(req, res, db) {
     JOIN FamiliasArtigos_T fa ON a.idFamilia = fa.idFamilia
     JOIN SubFamilias_T s ON a.idSubFamilia = s.idSubFamilia
     WHERE a.EAN = ?
-    GROUP BY a.idArtigo;
+    GROUP BY a.idArtigo limit 100;
   `;
   executeQuery(sql, [barcode], res, db);
 }
 
 function getArtigoBySearch(req, res, db) {
-  const search = req.params.search;
-  const sql = `
-    SELECT a.*, m.marca
+  console.log('REQ QUERY:',req.query.length);
+  const search = `%${req.query.search}%`;
+  let params = [search];
+  let sql = `
+    SELECT a.*, m.marca, f.nome AS fornecedor, c.categoriaPrincipal, fa.familia, s.subfamilia
     FROM Artigos_T a
     JOIN Marcas_T m ON a.idMarca = m.idMarca
     JOIN Fornecedores_T f ON a.idFornecedor = f.idFornecedor
     JOIN CategoriasArtigos_T c ON a.idCategoriaP = c.idCategoria
     JOIN FamiliasArtigos_T fa ON a.idFamilia = fa.idFamilia
     JOIN SubFamilias_T s ON a.idSubFamilia = s.idSubFamilia
-    WHERE a.idArtigo = ? OR m.marca LIKE ? OR f.nome LIKE ? OR c.categoriaPrincipal LIKE ? OR fa.familia LIKE ? OR s.subfamilia LIKE ?
-    GROUP BY a.idArtigo;
-  `;
-  const likeSearch = `%${search}%`;
-  executeQuery(sql, [search, likeSearch, likeSearch, likeSearch, likeSearch, likeSearch], res, db);
+    WHERE a.idArtigo LIKE ? `;
+
+  if (Object.keys(req.query).length === 1) {
+    sql += ` OR m.marca LIKE ? OR f.nome LIKE ? OR c.categoriaPrincipal LIKE ? OR fa.familia LIKE ? OR s.subfamilia LIKE ?`;
+    params = [search, search, search, search, search, search];
+  }else{
+    if (req.query.marca) {
+      sql += ` AND m.idMarca = ?`;
+      params.push(req.query.marca);
+    }
+    if (req.query.fornecedor) {
+      sql += ` AND f.idFornecedor = ?`;
+      params.push(req.query.fornecedor);
+    }
+    if (req.query.categoria) {
+      sql += ` AND c.idCategoria = ?`;
+      params.push(req.query.categoria);
+    }
+    if (req.query.familia) {
+      sql += ` AND fa.idFamilia = ?`;
+      params.push(req.query.familia);
+    }
+    if (req.query.subfamilia) {
+      sql += ` AND s.idSubfamilia = ?`;
+      params.push(req.query.subfamilia);
+    }
+  }
+  sql += ` GROUP BY a.idArtigo;`;
+  executeQuery(sql, params, res, db);
 }
+
+function getMarca (req, res, db) {executeQuery('SELECT idMarca, marca FROM Marcas_T', [], res, db);};
+function getCategoria(req, res, db) {executeQuery('SELECT idCategoria, categoriaPrincipal FROM CategoriasArtigos_T', [], res, db);}
+function getFornecedor(req, res, db) {executeQuery('SELECT idFornecedor, nome FROM Fornecedores_T', [], res, db);}
+function getFamilia(req, res, db) {executeQuery('SELECT idFamilia, familia FROM FamiliasArtigos_T', [], res, db);}
+function getSubfamilia(req, res, db) {executeQuery('SELECT idSubFamilia, subfamilia FROM SubFamilias_T', [], res, db);}
 
 function getArtigoLocalizacao(req, res, db) {
   const barcode = req.params.barcode;
@@ -77,10 +109,7 @@ function getArtigoLocalizacao(req, res, db) {
   executeQuery(sql, [barcode], res, db);
 }
 
-function getLocais(req, res, db) {
-  const sql = `SELECT * FROM Localizacao_T `;
-  executeQuery(sql,[],res, db);
-}
+function getLocais(req, res, db) {executeQuery('SELECT * FROM Localizacao_T',[],res, db);}
 
 function getSublocais(req, res, db) {
   const idLocal = req.params.idLocal;
@@ -100,5 +129,10 @@ module.exports = {
   getArtigoLocalizacao,
   getLocais,
   getSublocais,
-  getPosicoes
+  getPosicoes,
+  getMarca,
+  getCategoria,
+  getFornecedor,
+  getFamilia,
+  getSubfamilia,
 };
