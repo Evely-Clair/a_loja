@@ -20,35 +20,58 @@ export class ServerService {
     });
   }
 
+  insertArtigo(localizacoesNovas : []){
+    return this.request('POST', `${environment.serverUrl}/insert/local`, localizacoesNovas);
+  }
+
   getProduto(barcode: string) {
     return this.request('GET', `${environment.serverUrl}/produto?barcode=${barcode}`);
   }
-
-  getProdutoLocalizacao(barcode: string){
+  getProdutoLocalizacao(barcode: string | null){
     return this.request('GET', `${environment.serverUrl}/produto/localizacao/${barcode}`);
   }
+  getMarcas(){    
+    return this.request('GET', `${environment.serverUrl}/filtros/marcas`);
+  };
+  getFornecedores(){    
+    return this.request('GET', `${environment.serverUrl}/filtros/fornecedores`);
+  };
+  getCategorias(){    
+    return this.request('GET', `${environment.serverUrl}/filtros/categorias`);
+  };
+  getFamilias(){   
+    return this.request('GET', `${environment.serverUrl}/filtros/familias`);
+  };
+  getSubfamilias(){
+    return this.request('GET', `${environment.serverUrl}/filtros/subfamilias`);
+  };
 
-  getProdutoBySearch(search: string) {
-    return this.request('GET', `${environment.serverUrl}/produto/search/${search}`);
+
+  getProdutoBySearch(search: string, filters: any) {
+    let queryParams = `?search=${encodeURIComponent(search)}`;
+    if (filters.marca) queryParams += `&marca=${encodeURIComponent(filters.marca)}`;
+    if (filters.fornecedor) queryParams += `&fornecedor=${encodeURIComponent(filters.fornecedor)}`;
+    if (filters.categoria) queryParams += `&categoria=${encodeURIComponent(filters.categoria)}`;
+    if (filters.familia) queryParams += `&familia=${encodeURIComponent(filters.familia)}`;
+    if (filters.subfamilia) queryParams += `&subfamilia=${encodeURIComponent(filters.subfamilia)}`;
+      return this.request('GET', `${environment.serverUrl}/produto/search${queryParams}`);
   }
-  
-  getLocais() {
+    getLocais() {
     return this.request('GET', `${environment.serverUrl}/local`)
   }
-
   getSubLocais(idLocal : number) {
     return this.request('GET', `${environment.serverUrl}/local/sublocal/${idLocal}`)
   }
-
   getPosicoes(idSubLocal : number) {
     return this.request('GET', `${environment.serverUrl}/local/sublocal/posicao/${idSubLocal}`)
   }
-  
   updateProdutoQT(produto: Produto) {
-    return this.request('PUT', `${environment.serverUrl}/produto/update/${produto.idArtigo}`, produto);
+    return this.request('PUT', `${environment.serverUrl}/update/qt/${produto.idArtigo}`, produto);
   }
-
-  updateLocalizacao(localizacao :  []) {
-    return this.request('PUT', `${environment.serverUrl}/produto/update/localizacao/`, localizacao);
+  updateLocalizacao(idArtigo: string | null, localizacao : []) {
+    return this.request('PUT', `${environment.serverUrl}/update/local/${idArtigo}`, localizacao);
+  }
+  deleteLocalArtigo(localizacao : []){
+    return this.request('DELETE', `${environment.serverUrl}/delete/localArtigo`, localizacao);
   }
 }

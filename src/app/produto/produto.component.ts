@@ -42,7 +42,7 @@ export class ProdutoComponent implements OnInit {
     });
   }
 
-  public getLocalProducto(barcode: string){
+  public getLocalProducto(barcode: string | null){
     this.server.getProdutoLocalizacao(barcode).then((response) => {
       this.localizacoesProduto = response;
     })
@@ -50,35 +50,6 @@ export class ProdutoComponent implements OnInit {
       alert('Error fetching product:' + JSON.stringify(error));
     });
   }
-
-  public onShowForm() {
-    for (var i = 0; i < this.localizacoesProduto.length ;i++){
-      this.getSubLocais(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idLocalizacao']);
-      this.getPosicoes(this.localizacoesProduto[i]['idArtigoLocalizacao'], this.localizacoesProduto[i]['idSubLocalizacao']);  
-    }
-  }
-
-onSelectChange(event: any, index: number, type: string) {
-    const selectedValue = event.target.value;
-    if (type ==  'localizacao') {
-      this.localizacoesProduto[index]['idLocalizacao']  = selectedValue;
-      this.localizacoesProduto[index]['localizacao'] = event.target.options[event.target.selectedIndex].text;
-      this.getSubLocais(index, selectedValue)
-      this.getPosicoes(index, selectedValue)
-    } 
-
-    if(type ==  'sublocalizacao') {
-      this.localizacoesProduto[index]['idSubLocalizacao'] = selectedValue;
-      this.localizacoesProduto[index]['sublocalizacao'] = event.target.options[event.target.selectedIndex].text;
-      this.getPosicoes(index, selectedValue)
-    }
-        
-     if(type ==  'posicao') {
-      this.localizacoesProduto[index]['idPosicao'] = selectedValue;
-      this.localizacoesProduto[index]['posicao'] = event.target.options[event.target.selectedIndex].text;
-    }
-  }
-
 
   public getLocais() {
     this.server.getLocais().then((response) => {
@@ -97,30 +68,80 @@ onSelectChange(event: any, index: number, type: string) {
       } else {
         this.sublocais.push({ idArtigoLocal, sublocais: response });
       }
-      alert(JSON.stringify(this.sublocais))
     })
     .catch(error => {
-      alert('Error fetching sublocations:' + JSON.stringify(error));
+      alert('Error fetching sublocations: ' + JSON.stringify(error));
     });
   }
-
+  
   public getPosicoes(idArtigoLocal: number, idSubLocal: number) {
     this.server.getPosicoes(idSubLocal).then((response) => {
       const existingIndex = this.posicoes.findIndex(posicao => posicao.idArtigoLocal === idArtigoLocal);
       if (existingIndex !== -1) {
-        this.sublocais[existingIndex].sublocais = response;
+        this.posicoes[existingIndex].posicoes = response;
       } else {
-        this.sublocais.push({ idArtigoLocal, sublocais: response });
+        this.posicoes.push({ idArtigoLocal, posicoes: response });
       }
-      alert(JSON.stringify(this.posicoes));
     })
     .catch(error => {
       alert('Error fetching positions:' + JSON.stringify(error));
     });
   }
 
-  public updateArtigo() {
-    let qt = 0;
+  public onShowForm() {
+    if(this.sublocais.length === 0){
+      for (var i = 0; i < this.localizacoesProduto.length ;i++){
+        this.getSubLocais(i, this.localizacoesProduto[i]['idLocalizacao']);
+        this.getPosicoes(i, this.localizacoesProduto[i]['idSubLocalizacao']);  
+      }
+    }
+  }
 
+  public onSelectChange(event: any, index: number, type: string) {
+    const selectedValue = event.target.value;
+    if (type ==  'localizacao') {
+      this.getSubLocais(index, selectedValue)
+      this.getPosicoes(index, selectedValue)
+    } 
+    if(type ==  'sublocalizacao') {
+      this.getPosicoes(index, selectedValue)
+    }
+  }
+
+  public editarLocais(event: any){
+    const updatedData = event.target.elements; 
+    for(var i = 0; i < this.localizacoesProduto.length; i++){
+      this.localizacoesProduto[i]['idLocalizacao'] = parseInt(updatedData.localizacao[i].value);
+      this.localizacoesProduto[i]['idSubLocalizacao'] = parseInt(updatedData.sublocalizacao[i].value);
+      this.localizacoesProduto[i]['idPosicao'] = parseInt(updatedData.posicao[i].value);
+      this.localizacoesProduto[i]['qtLocal'] = parseInt(updatedData.qtLocal[i].value);
+    }
+    if(this.produto !== null){
+      this.produto.qt = parseInt(updatedData[0].value);
+    }
+    this.showUpdate = false;
+    this.updateArtigo(this.produto);
+  }
+
+  public updateArtigo(produto: any) {
+    this.server.updateProdutoQT(produto).catch(error => {
+      alert('Error updating product:' + JSON.stringify(error));
+    });
+    this.server.updateLocalizacao(this.barcode ,this.localizacoesProduto).catch(error => {
+      alert('Error updating local:' + JSON.stringify(error));
+    });
+    this.getLocalProducto(this.barcode);
+  } 
+
+  public insertLocalArtigo(localizacoesNovas : []) {
+    this.server.insertArtigo(localizacoesNovas).catch(error => {
+      alert('Error inserting local:' + JSON.stringify(error));
+    });
+  }
+
+  public deleteLocalArtigo(localizacao : []) {
+    this.server.deleteLocalArtigo(localizacao).catch(error => {
+      alert('Error inserting local:' + JSON.stringify(error));
+    });
   }
 }

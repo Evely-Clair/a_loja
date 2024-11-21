@@ -1,19 +1,69 @@
-<ion-content>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button routerLink="pag-principal">          
+        <img src="../../assets/voltar-img.png" alt="Voltar">
+      </ion-button>
+    </ion-buttons>
+    <ion-menu-toggle slot="end">
+      <ion-button><ion-icon name="menu-outline"></ion-icon></ion-button>
+    </ion-menu-toggle>
+  </ion-toolbar>
+</ion-header>
+
+<ion-menu contentId="main-content">
   <ion-header>
     <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-button routerLink="pag-principal">          
-          <img src="../../assets/voltar-img.png" alt="">
-        </ion-button>
-      </ion-buttons>
+      <ion-title>Filtros</ion-title>
     </ion-toolbar>
   </ion-header>
+  <ion-content>
+    <ion-item>
+      <ion-label>Marca</ion-label>
+      <select [(ngModel)]="filters.marca" placeholder="Selecione uma marca">
+        <option *ngFor="let marca of filtros.marcas" [value]="marca.idMarca">{{ marca.marca }}</option>
+      </select>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Fornecedor</ion-label>
+      <select [(ngModel)]="filters.fornecedor" placeholder="Selecione um fornecedor">
+        <option *ngFor="let fornecedor of filtros.fornecedores" [value]="fornecedor.idFornecedor">{{ fornecedor.nome }}</option>
+      </select>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Categoria</ion-label>
+      <select [(ngModel)]="filters.categoria" placeholder="Selecione uma categoria">
+        <option *ngFor="let categoria of filtros.categorias" [value]="categoria.idCategoria">{{ categoria.categoriaPrincipal }}</option>
+      </select>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Familia</ion-label>
+      <select [(ngModel)]="filters.familia" placeholder="Selecione uma família">
+        <option *ngFor="let familia of filtros.familias" [value]="familia.idFamilia">{{ familia.familia }}</option>
+      </select>
+    </ion-item>
+    
+    <ion-item>
+      <ion-label>Subfamília</ion-label>
+      <select [(ngModel)]="filters.subfamilia" placeholder="Selecione uma subfamília">
+        <option *ngFor="let subfamilia of filtros.subfamilias" [value]="subfamilia.idSubfamilia">{{ subfamilia.subfamilia }}</option>
+      </select>
+    </ion-item>
+    <ion-menu-toggle>
+      <ion-button expand="full" (click)="getProdutos(this.search)">Aplicar Filtros</ion-button>
+    </ion-menu-toggle>
+  </ion-content>
+</ion-menu>
 
+<ion-content id="main-content">
   <ion-card>
     <ion-list>
       <ion-item *ngFor="let produto of produtos" [routerLink]="['/produto', produto.idArtigo]">
         <ion-thumbnail slot="start">
-          <img src="../../assets/placeholder.jpg" alt="">
+          <img src="../../assets/placeholder.jpg" alt="Produto">
         </ion-thumbnail>
         <ion-label>
           <h2>{{ produto.artigo }}</h2>
