@@ -1,0 +1,13 @@
+{
+  "appId": "a.loja",
+  "appName": "a_loja",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "www",
+  "plugins": {},
+  "cordova": {},
+  "server": {
+		"cleartext": true,
+    "serverUrl": "http://192.168.1.131:8100"
+	}
+}
